@@ -8,9 +8,6 @@ import {
   useParams,
 } from "react-router-dom";
 
-import { useSelector, useDispatch } from 'react-redux'
-import { store, setName } from './store'
-
 const PrivateRoute = ({ children, name, ...rest }) => {
   // select name from the store
   return (
@@ -96,9 +93,6 @@ function Login({ setName }) {
 
 export default function App() {
   const [name, setName] = useState('');
-
-  const count = useSelector((state) => state.name.value)
-  const dispatch = useDispatch()
 
   useEffect(() => {
     if (name) {
