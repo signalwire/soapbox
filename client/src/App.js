@@ -9,7 +9,6 @@ import {
 } from "react-router-dom";
 
 const PrivateRoute = ({ children, name, ...rest }) => {
-  // select name from the store
   return (
     <Route
       {...rest}
@@ -29,7 +28,6 @@ const PrivateRoute = ({ children, name, ...rest }) => {
 };
 
 const LoginRoute = ({ children, name, ...rest }) => {
-  // select name from the store
   const location = useLocation();
   console.log('LoginRoute', location.state.from);
 
@@ -53,8 +51,8 @@ const LoginRoute = ({ children, name, ...rest }) => {
   );
 };
 
-function Home() {
-  return <h2>Home</h2>;
+function Home({name}) {
+  return <h2>Home {name}</h2>;
 }
 
 function Room() {
@@ -111,7 +109,7 @@ export default function App() {
             <Room />
           </PrivateRoute>
           <PrivateRoute path="/" name={name} bla="ciao">
-            <Home />
+            <Home name={name}/>
           </PrivateRoute>
         </Switch>
       </div>
