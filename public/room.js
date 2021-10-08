@@ -251,6 +251,23 @@ async function kickParticipant(e) {
   await _currentRoom.removeMember({ memberId: id });
 }
 
+async function promoteParticipant(e) {
+  var id = e.closest("li").id;
+  console.log('id is', id)
+  await formSubmit('/promote', { memberId: id });
+}
+
+async function formSubmit(url, body) {
+  await fetch(url, {
+    body: JSON.stringify(body),
+    method: "post",
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  return false;
+}
+
 window.ready(function () {
   connect();
   listDevices();

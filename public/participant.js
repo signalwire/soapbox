@@ -28,8 +28,8 @@ window.connect = () => {
         memberList.set(member.id, member);
       });
       renderMemberList();
-      muteSelf();
-      muteVideoSelf();
+      // muteSelf();
+      // muteVideoSelf();
     })
 
     _currentRoom.on('room.updated', (params) =>
@@ -146,6 +146,24 @@ window.renderMember = (parent, template, member, its_me) => {
   }
 }
 
+async function testMic() {
+  _currentRoom.updateCamera(true);
+  _currentRoom.updateMicrophone(true);
+  unmuteSelf();
+  unmuteVideoSelf();
+}
+
 window.ready(function () {
   connect();
+
+  var es = new EventSource('/stream');
+  es.onmessage = function (event) {
+    const data = JSON.parse(event.data);
+    console.log(data);
+    if (data.event == 'promote' && data.memberId == myMemberId) {
+      if (confirm('Join the room as a speaker?')) {
+        testMic();
+      }
+    }
+  };
 })

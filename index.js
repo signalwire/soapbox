@@ -91,6 +91,13 @@ app.post("/create", isLoggedIn, async (req, res) => {
   res.redirect('/room/' + name);
 });
 
+app.post("/promote", isLoggedIn, async (req, res) => {
+  console.log('memberID', req.body)
+  var memberId = req.body.memberId;
+  sendEvent({event: 'promote', memberId });
+  res.send('ok')
+});
+
 app.get('/room/:roomName', isLoggedIn, async (req, res) => {
   var roomName = req.params.roomName;
   var roomInformation = await utility.apiRequest('/api/video/rooms/' + roomName, {}, 'get');
