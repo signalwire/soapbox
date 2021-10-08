@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SignalWire Soapbox</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.bundle.min.js" integrity="sha512-PqRelaJGXVuQ81N6wjUrRQelCDR7z8RvKGiR9SbSxKHPIt15eJDmIVv9EJgwq0XvgylszsjzvQ0+VyI2WtIshQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.1.0/quartz/bootstrap.min.css" integrity="sha512-C5ccSlTnSKHZAKZVb14kIr19iO9o/Yqn19EpG2scpzIAZn6jqJk4B9QpMMKeuvaU334HdfJMDYYoFyhzh0Z+Sw==" crossorigin="anonymous" referrerpolicy="no-referrer" />  
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="/">SignalWire Soapbox</a>
+      <% if (typeof current_user !== 'undefined' && current_user.id) { %>
+        <span class=" flex-fill">
+        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#roomModal">
+          Create a room
+        </button></span>
+        <span class="navbar-text">Welcome, <%= current_user.name %> - </span>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Log Out</a>
+          </li>
+        </ul>
+        
+      <% } %>
+    </div>
+  </nav>
+  <div class="container pt-2">
+    <%- body %>
+  </div>
+<div class="modal fade" id="roomModal" tabindex="-1" aria-labelledby="roomModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="roomModalLabel">Create a room</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/create" method="post">
+      <div class="modal-body">
+        <label for="roomName" class="form-label">What's the name of your room?</label>
+        <input type="text" class="form-control" name="roomName" id="roomName" required>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Start speaking!</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>
