@@ -158,30 +158,6 @@ function setSelected(select_id, value) {
   document.querySelector('#' + select_id + ' [value="' + value + '"]').selected = true;
 }
 
-function toggleMute() {
-  if (audioActive) {
-    document.getElementById('toggleMute').innerText = 'Unmute';
-    muteSelf();
-    audioActive = false;
-  } else {
-    document.getElementById('toggleMute').innerText = 'Mute';
-    unmuteSelf();
-    audioActive = true;
-  }
-}
-
-function toggleVideoMute() {
-  if (videoActive) {
-    document.getElementById('toggleVideoMute').innerText = 'Start Video';
-    muteVideoSelf();
-    videoActive = false;
-  } else {
-    document.getElementById('toggleVideoMute').innerText = 'Stop Video';
-    unmuteVideoSelf();
-    videoActive = true;
-  }
-}
-
 async function setLayout() {
   const name = document.getElementById('layoutPicker').value
   await _currentRoom.setLayout({ name });
@@ -233,28 +209,57 @@ window.renderMemberList = () => {
 window.renderMember = (parent, template, member, its_me) => {
   if (member) {
     var clone = template.content.cloneNode(true);
-    var item = clone.querySelector('li');
+    var item = clone.querySelector('.participant');
     item.id = member.id
+    item.querySelector('.participantAvatar').src = `https://avatars.dicebear.com/api/gridy/${member.id}.svg`
     if (its_me) {
       item.querySelector('.participantName').innerText = member.name + '(me)';
-      var elem = item.querySelector('.participantControls');
-      elem.parentNode.removeChild(elem);
     } else {
       item.querySelector('.participantName').innerText = member.name
     }
+    
     parent.appendChild(clone);
   }
+  document.getElementById(member.id).setAttribute('data-bs-content', `<div class="btn-group"><button class="btn btn-sm btn-warning" onclick="kickParticipant('${member.id}');">Kick</button><button class="btn btn-sm btn-info" onclick="promoteParticipant('${member.id}');">Promote</button></div>`);
+  new bootstrap.Popover(document.getElementById(member.id), {
+    html: true,
+    placement:'bottom',
+    sanitize: false
+  });
 }
 
 async function kickParticipant(e) {
-  var id = e.closest("li").id;
-  await _currentRoom.removeMember({ memberId: id });
+  $('.popover').popover('hide');
+  await _currentRoom.removeMember({ memberId: e });
 }
 
 async function promoteParticipant(e) {
-  var id = e.closest("li").id;
-  console.log('id is', id)
-  await formSubmit('/promote', { memberId: id });
+  $('.popover').popover('hide');
+  await formSubmit('/promote', { memberId: e });
+}
+
+function toggleMuteFn() {
+  if (audioActive) {
+    document.getElementById('toggleMute').innerText = 'Unmute';
+    muteSelf();
+    audioActive = false;
+  } else {
+    document.getElementById('toggleMute').innerText = 'Mute';
+    unmuteSelf();
+    audioActive = true;
+  }
+}
+
+function toggleVideoMuteFn() {
+  if (videoActive) {
+    document.getElementById('toggleVideoMute').innerText = 'Start Video';
+    muteVideoSelf();
+    videoActive = false;
+  } else {
+    document.getElementById('toggleVideoMute').innerText = 'Stop Video';
+    unmuteVideoSelf();
+    videoActive = true;
+  }
 }
 
 async function formSubmit(url, body) {

@@ -1,0 +1,13 @@
+.participant {
+  width: 80px;
+  height: 80px;
+}
+
+#participantList {
+  max-height: 250px;
+  overflow-y: scroll;
+}
+
+.hiddenControl {
+  display: none;
+}

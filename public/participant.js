@@ -2,8 +2,8 @@ let _currentRoom = null
 const memberList = new Map()
 let myMemberId = null;
 
-let audioActive = false;
-let videoActive = false;
+let audioActive = true;
+let videoActive = true;
 
 /**
  * Connect with Relay creating a client and attaching all the event handler.
@@ -135,35 +135,91 @@ window.renderMemberList = () => {
 window.renderMember = (parent, template, member, its_me) => {
   if (member) {
     var clone = template.content.cloneNode(true);
-    var item = clone.querySelector('li');
+    var item = clone.querySelector('.participant');
     item.id = member.id
+    item.querySelector('.participantAvatar').src = `https://avatars.dicebear.com/api/gridy/${member.id}.svg`
     if (its_me) {
       item.querySelector('.participantName').innerText = member.name + '(me)';
     } else {
       item.querySelector('.participantName').innerText = member.name
     }
+    
     parent.appendChild(clone);
   }
 }
 
-async function testMic() {
+function toggleMuteFn() {
+  if (audioActive) {
+    document.getElementById('toggleMute').innerText = 'Unmute';
+    muteSelf();
+    audioActive = false;
+  } else {
+    document.getElementById('toggleMute').innerText = 'Mute';
+    unmuteSelf();
+    audioActive = true;
+  }
+}
+
+function toggleVideoMuteFn() {
+  if (videoActive) {
+    document.getElementById('toggleVideoMute').innerText = 'Start Video';
+    muteVideoSelf();
+    videoActive = false;
+  } else {
+    document.getElementById('toggleVideoMute').innerText = 'Stop Video';
+    unmuteVideoSelf();
+    videoActive = true;
+  }
+}
+
+async function handlePromote() {
+  listDevices();
   _currentRoom.updateCamera(true);
   _currentRoom.updateMicrophone(true);
   unmuteSelf();
   unmuteVideoSelf();
+  $('.hiddenControl').show();
+}
+
+function confirmDialog() {
+  bootbox.confirm("Join the room as a speaker?", function(result){ 
+    console.log('This was logged in the callback: ' + result); 
+    if (result == true) {
+      handlePromote();
+    }
+  });
+}
+
+async function listDevices() {
+  var devices = await SignalWire.WebRTC.getDevicesWithPermissions();
+  devices.forEach((device) => {
+    var opt = document.createElement('option');
+    opt.value = device.deviceId;
+    opt.innerHTML = device.label;
+    document.getElementById(device.kind).appendChild(opt);
+  });
+}
+
+function setInput() {
+  var audioInput = document.getElementById('audioinput').value;
+  _currentRoom.updateMicrophone({ deviceId: audioInput });
+  var videoInput = document.getElementById('videoinput').value;
+  _currentRoom.updateCamera({ deviceId: videoInput });
+}
+
+function setOutput() {
+  var audioOutput = document.getElementById('audiooutput').value;
+  _currentRoom.updateSpeaker({ deviceId: audioOutput });
 }
 
 window.ready(function () {
-  connect();
-
   var es = new EventSource('/stream');
   es.onmessage = function (event) {
     const data = JSON.parse(event.data);
     console.log(data);
     if (data.event == 'promote' && data.memberId == myMemberId) {
-      if (confirm('Join the room as a speaker?')) {
-        testMic();
-      }
+      confirmDialog();
     }
   };
+  connect();
 })

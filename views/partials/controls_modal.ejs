@@ -1,0 +1,37 @@
+<div class="modal fade" id="deviceModal" tabindex="-1" aria-labelledby="deviceModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deviceModalLabel">Devices and settings</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/create" method="post">
+      <div class="modal-body">
+        <div>
+          <label for="audioinput" class="form-label">Audio Input</label>
+          <select id="audioinput" class="form-select" onchange="setInput()"></select>
+          <label for="videoinput" class="form-label">Video Input</label>
+          <select id="videoinput" class="form-select" onchange="setInput()"></select>
+        </div>
+        <div>
+          <label for="audioutput" class="form-label">Audio Output</label>
+          <select id="audiooutput" class="form-select" onchange="setOutput()"></select>
+        </div>
+        <hr>
+        <div>
+          <label for="inputVolume" class="form-label">Audio Input Volume (<span id="inputVolumeDisplay">0</span>)</label>
+          <input type="range" class="form-range" id="inputVolume" min="-50" max="50" step="1" value="0" onchange="setMicrophoneVolume()">
+          <label for="outputVolume" class="form-label">Audio Output Volume (<span id="outputVolumeDisplay">0</span>)</label>
+          <input type="range" class="form-range" id="outputVolume" min="-50" max="50" step="1" value="0" onchange="setSpeakerVolume()">
+          <div class="form-text">Volumes are expressed in dB, from -50 to 50, default 0</div>
+          <label for="inputSensitivity" class="form-label">Input Sensitivity</label>
+          <input type="range" class="form-range" id="inputSensitivity" min="30" max="1430" step="200" value="30" onchange="setInputSensitivity()">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
