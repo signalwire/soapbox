@@ -101,6 +101,7 @@ app.post("/promote", isLoggedIn, async (req, res) => {
 app.get('/room/:roomName', isLoggedIn, async (req, res) => {
   var roomName = req.params.roomName;
   var roomInformation = await utility.apiRequest('/api/video/rooms/' + roomName, {}, 'get');
+  console.log(roomInformation.data)
   var roomId = roomInformation.data.id;
   var userName = res.locals.current_user.name
   var token = await utility.getVideoToken(roomName, userName, 'moderator')
